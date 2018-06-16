@@ -1,0 +1,114 @@
+---
+
+test_name: POST a message and check the SHA256
+
+stages:
+  - name: post
+    # Make sure the returned SHA is correct
+    request:
+      url: http://localhost:8006/messages
+      method: POST
+      json:
+        message: foo
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 200
+      body:
+        digest: 2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
+
+---
+
+test_name: POST a message, check the SHA, post the same message, check 409
+
+stages:
+  - name: post first
+    # Make sure the returned SHA is correct
+    request:
+      url: http://localhost:8006/messages
+      method: POST
+      json:
+        message: foobar
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 200
+      body:
+        digest: c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2
+
+  - name: post second
+    # Make sure 409 is returned
+    request:
+      url: http://localhost:8006/messages
+      method: POST
+      json:
+        message: foobar
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 409
+      body:
+        err_msg: Message already exists
+
+---
+
+test_name: POST a message that is an integer
+
+stages:
+  - name: post integer
+    # Make sure the api converts the integer to a string
+    request:
+      url: http://localhost:8006/messages
+      method: POST
+      json:
+        message: 123
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 200
+      body:
+        digest: a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
+
+---
+
+test_name: GET a message with the digest
+
+stages:
+  - name: get with digest
+    # Make sure the api returns the correct message
+    request:
+      url: http://localhost:8006/messages/2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
+      method: GET
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 200
+      body:
+        message: foo
+
+---
+
+test_name: GET a message with the digest that does not exist
+
+stages:
+  - name: get with digest
+    # Make sure the api returns 404
+    request:
+      url: http://localhost:8006/messages/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      method: GET
+      headers:
+        content-type: application/json
+
+    response:
+      status_code: 404
+      body:
+        err_msg: Message not found
+
+
+
+
