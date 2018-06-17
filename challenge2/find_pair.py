@@ -43,12 +43,12 @@ def pick_best(gifts, target):
         if current_diff < 0:
             r_ptr -= 1
         else:
-            # If a smaller differene is found, update the min_diff and the best pair
+            # If a smaller difference is found, update the min_diff and the best pair
             if min_diff is None or current_diff < min_diff:
                 min_diff = current_diff
                 best_gifts = (gifts[l_ptr], gifts[r_ptr])
-            else:
-                l_ptr += 1 
+
+            l_ptr += 1     
 
     # If no good values are found return (None, None)
     return best_gifts
@@ -59,16 +59,17 @@ if __name__ == '__main__':
         print('ERROR: The command line must have two inputs')
         sys.exit(1)
 
-    if not os.path.isfile(sys.argv[1]):
+    # Get the inputs from the command line
+    _, PRICES_FILE, TARGET = sys.argv
+
+    if not os.path.isfile(PRICES_FILE):
         print('ERROR: The first command line input must be a valid file')
         sys.exit(1)
 
-    if not sys.argv[2].isdigit():
+    if not TARGET.isdigit():
         print('ERROR: The second command line input must be a valid integer')
         sys.exit(1)
 
-    # Get the inputs from the command line
-    _, PRICES_FILE, TARGET = sys.argv
     # Parse the file and return a list of items and prices
     gifts = parse_lines(PRICES_FILE)
     # Pick the best pair
