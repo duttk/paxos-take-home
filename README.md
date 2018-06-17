@@ -12,6 +12,12 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
+The pip install might fail if setup tools version is < 36. 
+To fix this, upgrade setuptools and try the pip install again.
+
+```
+$ pip install --upgrade setuptools
+```
 
 ## Challenge 1
 
@@ -23,7 +29,11 @@ We need to first create a python virtual environment and use requirement.txt to 
 
 ```
 $ cd challenge1
-$ hug -p 8006 -f sha.py
+$ hug -p 8006 -f sha.py &
+$ curl -X POST -H  "Content-Type:  application/json" -d '{"message":  "foo"}' localhost:8006/messages
+$ curl localhost:8006/messages/2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae
+$ curl localhost:8006/messages/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+$ curl localhost:8006/
 ```
 
 ### Testing
@@ -32,7 +42,7 @@ To test the API, we need the server running.
 We can then run our automated test suite with pytest.
 
 ```
-$ hug -p 8006 -f sha.py
+$ hug -p 8006 -f sha.py &
 $ pytest test_sha.tavern.yaml
 ```
 
@@ -83,7 +93,7 @@ If this element is X, we return both 0 and 1, else, we return the element.
 We can test the solution as below
 ```
 $ cd challenge3
-$ ./find-combinations 0X0X1
+$ ./myprogram 0X0X1
 ```
 
 ### Performance 
